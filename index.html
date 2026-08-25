@@ -1,5 +1,4 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Heebo:wght@400;700;900&family=IBM+Plex+Mono:wght@500&display=swap">
   <style>
     body { margin: 0; direction: rtl; background: #070310; }
@@ -20,7 +19,7 @@
     @keyframes flyIn   { from { opacity: 0; transform: translateY(70px) rotate(-4deg); } to { opacity: 1; transform: none; } }
     @keyframes slideEnd{ from { opacity: 0; transform: translateX(-90px); } to { opacity: 1; transform: none; } }
     @keyframes growUp  { from { transform: scaleY(.2); } to { transform: scaleY(1); } }
-    @keyframes drawLine{ from { stroke-dashoffset: 2400; } to { stroke-dashoffset: 0; } }
+    @keyframes drawLine{ from { stroke-dashoffset: var(--len,3200); } to { stroke-dashoffset: 0; } }
     @keyframes lampPulse { from { opacity: .7; } to { opacity: 1; } }
 
     @supports (animation-timeline: view()) {
@@ -38,9 +37,51 @@
     .branch { transition: background-color .3s ease, padding .3s ease; }
     .branch:hover { background: #12081E; padding-inline-start: 34px; }
 
+    /* ---- ribbon swaps to a portrait curve rather than being squashed ---- */
+    .ribbon-d path { --len: 3200; stroke-dasharray: 3200; stroke-dashoffset: 0; }
+    .ribbon-m path { --len: 1700; stroke-dasharray: 1700; stroke-dashoffset: 0; }
+    .ribbon-m { display: none; }
+
+    /* ---- responsive: recompose, don't shrink ---- */
+    @media (max-width: 860px) {
+      .ribbon-d { display: none; }
+      .ribbon-m { display: block; }
+      .navbar { padding: 16px 20px !important; gap: 12px !important; }
+      .navbar a { padding-block: 13px !important; }
+      .navlinks { display: none !important; }
+      .hero { padding: 18px 20px 56px !important; }
+      .sec { padding-inline: 20px !important; }
+      .stack2 { grid-template-columns: 1fr !important; gap: 26px !important; }
+      .sticky25 { position: static !important; }
+      .grid12 > * { grid-column: span 6 !important; margin-block-start: 0 !important; }
+      .grid3 { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+      .grid3 > * { margin-block-start: 0 !important; }
+      .foot3 { grid-template-columns: 1fr 1fr !important; }
+      .foot3 a { display: inline-block; padding-block: 9px !important; }
+      .blink { display: inline-block; padding-block: 8px !important; }
+    }
+    @media (max-width: 560px) {
+      .hero h1 { font-size: clamp(56px, 18vw, 132px) !important; }
+      .tumbler { margin-inline-start: -1% !important; }
+      .grid12 > * { grid-column: span 12 !important; }
+      .grid3 { grid-template-columns: 1fr !important; }
+      .foot3 { grid-template-columns: 1fr !important; }
+      .brow { flex-wrap: wrap !important; gap: 10px !important; }
+      .blink { margin-inline-start: 0 !important; }
+      .sec { padding-block: 54px !important; }
+    }
+
+    /* ---- touch: nothing hidden behind hover; taps still get feedback ---- */
+    @media (hover: none) {
+      .card:active { transform: translateY(-6px) !important; }
+      .branch:active { background: #12081E; }
+      a:active { opacity: .86; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .run > div { animation: none; }
       .fly, .slide, .grow, .tumbler, .ribbon path, .lamp { animation: none !important; }
+      .ribbon path { stroke-dashoffset: 0 !important; }
       .card { transition: none; }
     }
   </style>
@@ -49,9 +90,9 @@
 <div dir="rtl" style="width: 100%; max-width: 1440px; margin-inline: auto; background: #070310; color: #FFFFFF; font-family: Assistant, system-ui, sans-serif; font-size: 18px; line-height: 1.7; overflow: hidden;">
 
   <!-- ================= nav ================= -->
-  <div style="display: flex; align-items: center; gap: 28px; padding: 22px 56px; position: relative; z-index: 30;">
+  <div class="navbar" style="display: flex; align-items: center; gap: 28px; padding: 22px 56px; position: relative; z-index: 30;">
     <span style="font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: 26px; line-height: 1;">מחוללות</span>
-    <div style="display: flex; gap: 26px; margin-inline-start: auto;">
+    <div class="navlinks" style="display: flex; gap: 26px; margin-inline-start: auto;">
       <a href="#" style="color: rgba(255,255,255,.66); font-weight: 700; font-size: 15px;">אודות</a>
       <a href="#" style="color: rgba(255,255,255,.66); font-weight: 700; font-size: 15px;">תחומים</a>
       <a href="#" style="color: rgba(255,255,255,.66); font-weight: 700; font-size: 15px;">סניפים</a>
@@ -60,13 +101,16 @@
   </div>
 
   <!-- ================= hero — type breaks the edge, then tumbles ================= -->
-  <div style="position: relative; padding: 40px 56px 96px;">
+  <div class="hero" style="position: relative; padding: 40px 56px 96px;">
     <div class="lamp" style="position: absolute; inset: -10% -10% 20%; pointer-events: none; background: radial-gradient(38% 54% at 78% 0%, rgba(236,0,140,.55), transparent 64%), radial-gradient(34% 48% at 22% 6%, rgba(135,134,251,.42), transparent 62%), radial-gradient(30% 40% at 50% 30%, rgba(238,227,51,.20), transparent 66%);"></div>
 
-    <svg class="ribbon" viewBox="0 0 1440 620" preserveAspectRatio="none" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;">
+    <svg class="ribbon ribbon-d" viewBox="0 0 1440 620" preserveAspectRatio="none" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;">
       <path d="M1460 90 C1180 90,1150 330,830 330 C520 330,470 120,180 210 C-40 278,60 520,420 520 C820 520,1000 430,1480 470"
-            fill="none" stroke="#FF3FA8" stroke-width="3" stroke-linecap="round"
-            stroke-dasharray="2400" stroke-dashoffset="0"></path>
+            fill="none" stroke="#FF3FA8" stroke-width="3" stroke-linecap="round"></path>
+    </svg>
+    <svg class="ribbon ribbon-m" viewBox="0 0 375 640" preserveAspectRatio="none" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;">
+      <path d="M366 26 C334 152,64 132,46 258 C30 380,342 352,336 476 C331 580,92 556,22 630"
+            fill="none" stroke="#FF3FA8" stroke-width="4" stroke-linecap="round"></path>
     </svg>
 
     <div style="position: relative; display: flex; flex-direction: column; align-items: flex-start;">
@@ -98,9 +142,9 @@
   </div>
 
   <!-- ================= sticky 25 — the number holds while the story scrolls ================= -->
-  <div style="position: relative; padding: 80px 56px 90px;">
-    <div style="display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items: start;">
-      <div style="position: sticky; top: 30px; align-self: start;">
+  <div class="sec" style="position: relative; padding: 80px 56px 90px;">
+    <div class="stack2" style="display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items: start;">
+      <div class="sticky25" style="position: sticky; top: 30px; align-self: start;">
         <span class="grow" style="display: block; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(150px, 27vw, 400px); line-height: .74; color: transparent; -webkit-text-stroke: 3px #00ACC5; margin-inline-start: -2%;">25</span>
         <span style="display: block; margin-top: 6px; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(22px, 3.2vw, 40px); color: #00ACC5; line-height: 1;">שנות ניסיון</span>
       </div>
@@ -118,9 +162,9 @@
   </div>
 
   <!-- ================= disciplines — asymmetric, each its own colour ================= -->
-  <div style="padding: 30px 56px 90px;">
+  <div class="sec" style="padding: 30px 56px 90px;">
     <h2 class="slide" style="margin: 0 0 34px; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(40px, 7.5vw, 108px); line-height: .92; margin-inline-start: -2%;">מה לומדים אצלנו</h2>
-    <div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 18px;">
+    <div class="grid12" style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 18px;">
       <div class="card fly" style="grid-column: span 5; background: #12081E; border: 1px solid rgba(255,255,255,.10); border-radius: 22px; padding: 30px 28px 34px; transform: rotate(-1.10deg); margin-block-start: 0;">
         <span style="display: block; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #EC008C;">01</span>
         <h3 style="margin: 12px 0 0; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(24px, 2.7vw, 38px); line-height: 1.05; color: #EC008C;">אקרובטיקה והתעמלות קרקע</h3>
@@ -155,10 +199,10 @@
   </div>
 
   <!-- ================= reasons — full colour block, ink on yellow ================= -->
-  <div style="background: #EEE333; color: #070310; padding: 76px 56px 84px;">
+  <div class="sec" style="background: #EEE333; color: #070310; padding: 76px 56px 84px;">
     <h2 class="slide" style="margin: 0 0 8px; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(38px, 7vw, 100px); line-height: .94; margin-inline-start: -2%;">כמה סיבות</h2>
     <p style="margin: 0 0 40px; font-family: Heebo, system-ui, sans-serif; font-weight: 700; font-size: clamp(20px, 2.6vw, 34px); color: rgba(7,3,16,.66);">לבחור במחוללות</p>
-    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px 34px;">
+    <div class="grid3" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px 34px;">
       <div class="fly"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; opacity: .7;">01</span><p style="margin: 6px 0 0; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(20px, 2.2vw, 30px); line-height: 1.15;">פיתוח הגמישות והקואורדינציה</p></div>
       <div class="fly" style="margin-block-start: 26px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; opacity: .7;">02</span><p style="margin: 6px 0 0; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(20px, 2.2vw, 30px); line-height: 1.15;">הקניית ביטחון עצמי</p></div>
       <div class="fly"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; opacity: .7;">03</span><p style="margin: 6px 0 0; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(20px, 2.2vw, 30px); line-height: 1.15;">רוח בית יעקב</p></div>
@@ -177,21 +221,21 @@
   </div>
 
   <!-- ================= branches — big kinetic list ================= -->
-  <div style="padding: 80px 56px 90px;">
+  <div class="sec" style="padding: 80px 56px 90px;">
     <h2 class="slide" style="margin: 0 0 30px; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(38px, 7vw, 100px); line-height: .94; margin-inline-start: -2%; color: #8786FB;">ברחבי הארץ</h2>
     <div style="display: flex; flex-direction: column;">
-      <div class="branch fly" style="display: flex; align-items: baseline; gap: 22px; padding: 18px 22px; border-top: 1px solid rgba(255,255,255,.14); border-radius: 14px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #8786FB;">01</span><span style="font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(26px, 4vw, 56px); line-height: 1;">ירושלים</span><span style="margin-inline-start: auto; color: #FF3FA8; font-weight: 700; font-size: 15px;">לפרטי הסניף</span></div>
-      <div class="branch fly" style="display: flex; align-items: baseline; gap: 22px; padding: 18px 22px; border-top: 1px solid rgba(255,255,255,.14); border-radius: 14px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #8786FB;">02</span><span style="font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(26px, 4vw, 56px); line-height: 1;">ביתר</span><span style="margin-inline-start: auto; color: #FF3FA8; font-weight: 700; font-size: 15px;">לפרטי הסניף</span></div>
-      <div class="branch fly" style="display: flex; align-items: baseline; gap: 22px; padding: 18px 22px; border-top: 1px solid rgba(255,255,255,.14); border-radius: 14px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #8786FB;">03</span><span style="font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(26px, 4vw, 56px); line-height: 1;">פתח תקווה</span><span style="margin-inline-start: auto; color: #FF3FA8; font-weight: 700; font-size: 15px;">לפרטי הסניף</span></div>
-      <div class="branch fly" style="display: flex; align-items: baseline; gap: 22px; padding: 18px 22px; border-top: 1px solid rgba(255,255,255,.14); border-radius: 14px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #8786FB;">04</span><span style="font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(26px, 4vw, 56px); line-height: 1;">אלעד</span><span style="margin-inline-start: auto; color: #FF3FA8; font-weight: 700; font-size: 15px;">לפרטי הסניף</span></div>
-      <div class="branch fly" style="display: flex; align-items: baseline; gap: 22px; padding: 18px 22px; border-top: 1px solid rgba(255,255,255,.14); border-radius: 14px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #8786FB;">05</span><span style="font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(26px, 4vw, 56px); line-height: 1;">רחובות</span><span style="margin-inline-start: auto; color: #FF3FA8; font-weight: 700; font-size: 15px;">לפרטי הסניף</span></div>
-      <div class="branch fly" style="display: flex; align-items: baseline; gap: 22px; padding: 18px 22px; border-block: 1px solid rgba(255,255,255,.14); border-radius: 14px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #8786FB;">06</span><span style="font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(26px, 4vw, 56px); line-height: 1;">בית שמש</span><span style="margin-inline-start: auto; color: #FF3FA8; font-weight: 700; font-size: 15px;">לפרטי הסניף</span></div>
+      <div class="branch brow fly" style="display: flex; align-items: baseline; gap: 22px; padding: 18px 22px; border-top: 1px solid rgba(255,255,255,.14); border-radius: 14px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #8786FB;">01</span><span style="font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(26px, 4vw, 56px); line-height: 1;">ירושלים</span><span class="blink" style="margin-inline-start: auto; color: #FF3FA8; font-weight: 700; font-size: 15px;">לפרטי הסניף</span></div>
+      <div class="branch brow fly" style="display: flex; align-items: baseline; gap: 22px; padding: 18px 22px; border-top: 1px solid rgba(255,255,255,.14); border-radius: 14px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #8786FB;">02</span><span style="font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(26px, 4vw, 56px); line-height: 1;">ביתר</span><span class="blink" style="margin-inline-start: auto; color: #FF3FA8; font-weight: 700; font-size: 15px;">לפרטי הסניף</span></div>
+      <div class="branch brow fly" style="display: flex; align-items: baseline; gap: 22px; padding: 18px 22px; border-top: 1px solid rgba(255,255,255,.14); border-radius: 14px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #8786FB;">03</span><span style="font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(26px, 4vw, 56px); line-height: 1;">פתח תקווה</span><span class="blink" style="margin-inline-start: auto; color: #FF3FA8; font-weight: 700; font-size: 15px;">לפרטי הסניף</span></div>
+      <div class="branch brow fly" style="display: flex; align-items: baseline; gap: 22px; padding: 18px 22px; border-top: 1px solid rgba(255,255,255,.14); border-radius: 14px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #8786FB;">04</span><span style="font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(26px, 4vw, 56px); line-height: 1;">אלעד</span><span class="blink" style="margin-inline-start: auto; color: #FF3FA8; font-weight: 700; font-size: 15px;">לפרטי הסניף</span></div>
+      <div class="branch brow fly" style="display: flex; align-items: baseline; gap: 22px; padding: 18px 22px; border-top: 1px solid rgba(255,255,255,.14); border-radius: 14px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #8786FB;">05</span><span style="font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(26px, 4vw, 56px); line-height: 1;">רחובות</span><span class="blink" style="margin-inline-start: auto; color: #FF3FA8; font-weight: 700; font-size: 15px;">לפרטי הסניף</span></div>
+      <div class="branch brow fly" style="display: flex; align-items: baseline; gap: 22px; padding: 18px 22px; border-block: 1px solid rgba(255,255,255,.14); border-radius: 14px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #8786FB;">06</span><span style="font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(26px, 4vw, 56px); line-height: 1;">בית שמש</span><span class="blink" style="margin-inline-start: auto; color: #FF3FA8; font-weight: 700; font-size: 15px;">לפרטי הסניף</span></div>
     </div>
   </div>
 
   <!-- ================= registration — the loudest block ================= -->
-  <div style="background: #8786FB; color: #070310; padding: 80px 56px 88px;">
-    <div style="display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: start;">
+  <div class="sec" style="background: #8786FB; color: #070310; padding: 80px 56px 88px;">
+    <div class="stack2" style="display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: start;">
       <div>
         <h2 class="slide" style="margin: 0; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(40px, 7.6vw, 112px); line-height: .9; margin-inline-start: -2%;">חודש ניסיון</h2>
         <p style="margin: 6px 0 0; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(26px, 4.4vw, 64px); line-height: 1; color: transparent; -webkit-text-stroke: 2px #070310;">ללא התחייבות</p>
@@ -226,9 +270,9 @@
   </div>
 
   <!-- ================= footer ================= -->
-  <div style="padding: 60px 56px 40px; background: #070310;">
+  <div class="sec" style="padding: 60px 56px 40px; background: #070310;">
     <p style="margin: 0 0 34px; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(54px, 13vw, 190px); line-height: .82; color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,.22); margin-inline-start: -3%;">מחוללות</p>
-    <div style="display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 30px; border-top: 1px solid rgba(255,255,255,.14); padding-top: 28px;">
+    <div class="foot3" style="display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 30px; border-top: 1px solid rgba(255,255,255,.14); padding-top: 28px;">
       <div>
         <p style="margin: 0; max-width: 30ch; color: rgba(255,255,255,.6); font-size: 16px;">בית הספר למחול ואקרובטיקה של שבי הולצברג</p>
       </div>
