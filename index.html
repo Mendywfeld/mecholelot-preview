@@ -21,6 +21,8 @@
     @keyframes growUp  { from { transform: scaleY(.2); } to { transform: scaleY(1); } }
     @keyframes drawLine{ from { stroke-dashoffset: var(--len,3200); } to { stroke-dashoffset: 0; } }
     @keyframes lampPulse { from { opacity: .7; } to { opacity: 1; } }
+    /* gentler than flyIn — a form row travelling 70px would read as a glitch */
+    @keyframes rowIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 
     @supports (animation-timeline: view()) {
       .fly   { animation: flyIn    linear both; animation-timeline: view(); animation-range: entry 5% cover 32%; }
@@ -29,6 +31,22 @@
       .tumbler { animation: tumble linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
       .ribbon path { animation: drawLine linear both; animation-timeline: view(); animation-range: entry 0% cover 60%; }
       .lamp { animation: lampPulse linear both; animation-timeline: view(); animation-range: entry 0% cover 50%; }
+
+      /* The registration block sits low on the page, so it never scrolls far
+         enough to reach a `cover`-phase range end — an animation ranged that
+         way freezes part-done and the card stays washed out. Everything here
+         is ranged inside `entry`, so it completes once the card is fully
+         visible no matter where the page stops scrolling. */
+      .regwrap { animation: flyIn linear both; animation-timeline: view(); animation-range: entry 0% entry 95%; }
+
+      /* the rows deal themselves in — the stagger comes from each row
+         finishing a little later than the one above it */
+      .regfield { animation: rowIn linear both; animation-timeline: view(); }
+      .regfield:nth-child(1) { animation-range: entry 0%  entry 60%; }
+      .regfield:nth-child(2) { animation-range: entry 5%  entry 68%; }
+      .regfield:nth-child(3) { animation-range: entry 10% entry 76%; }
+      .regfield:nth-child(4) { animation-range: entry 15% entry 84%; }
+      .regfield:nth-child(5) { animation-range: entry 20% entry 92%; }
     }
 
     /* ---- hover: cards react ---- */
@@ -37,36 +55,60 @@
     .branch { transition: background-color .3s ease, padding .3s ease; }
     .branch:hover { background: #12081E; padding-inline-start: 34px; }
 
-    /* ---- registration form: the Google iframe sits in a designed panel ----
-       The iframe is cross-origin, so nothing inside it can be styled. Everything
-       here dresses the container so it reads as part of the block, not a widget.
-       --form-h is the only knob: the embed cannot self-measure, so the height is
-       set per breakpoint. Narrow screens need more because the fields stack. */
-    .formpanel {
-      position: relative;
-      margin-block-start: 22px;
-      background: #FFFFFF;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 18px 44px rgba(0,0,0,.42);
+    /* ---- registration card: looks like a form, is one single link ----
+       The whole card is an <a>. The field rows are decorative — no inputs, so
+       there is nothing inside to steal the click. The entrance lives on a
+       wrapper (.regwrap.fly) so the card keeps full control of its own
+       transform for the resting tilt and the hover lift; a filled scroll-driven
+       animation on the card itself would override :hover. */
+    .regcard {
+      display: block;
+      text-decoration: none;
+      color: #FFFFFF;
+      background: #070310;
+      border-radius: 26px;
+      padding: 30px 28px 28px;
+      --tilt: -1.10deg;
+      transform: rotate(var(--tilt));
+      box-shadow: 0 16px 40px rgba(0,0,0,.32);
+      transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease;
     }
+    /* colour is restated because the global a:hover out-specifies .regcard */
+    .regcard:hover { color: #FFFFFF; transform: rotate(0deg) translateY(-10px); box-shadow: 0 30px 64px rgba(0,0,0,.46); }
+    .regcard:focus-visible { outline: 3px solid #EEE333; outline-offset: 5px; }
+
     /* hard colour bar — the same blocked-colour move the cards and marquees use */
-    .formpanel::before {
-      content: "";
+    .regbar { display: flex; height: 6px; border-radius: 999px; overflow: hidden; }
+    .regbar span { flex: 1; }
+
+    .regfields { display: grid; grid-template-columns: 1fr 1fr; gap: 15px 16px; margin-block-start: 24px; }
+    .regfield.wide { grid-column: 1 / -1; }
+    .regfield .lbl { display: block; font-weight: 700; font-size: 14px; color: rgba(255,255,255,.52); }
+    .regfield .bar {
       display: block;
-      height: 6px;
-      background: linear-gradient(90deg, #EC008C 0 34%, #EEE333 34% 67%, #00ACC5 67% 100%);
+      margin-block-start: 7px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.13);
+      transition: background-color .35s ease, border-color .35s ease;
     }
-    .gform {
-      display: block;
-      width: 100%;
-      max-width: 100%;
-      height: var(--form-h, 1180px);
-      border: 0;
-      background: #FFFFFF;
+    /* the first row reads as the one waiting to be filled */
+    .regfield:first-child .bar { border-color: rgba(238,227,51,.42); }
+    .regcard:hover .regfield .bar { background: rgba(255,255,255,.085); border-color: rgba(255,255,255,.26); }
+    .regcard:hover .regfield:first-child .bar { border-color: #EEE333; }
+
+    .regcta {
+      display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+      margin-block-start: 26px; padding: 16px 34px; min-height: 54px;
+      background: #EEE333; color: #070310;
+      font-weight: 700; font-size: 18px; border-radius: 999px;
     }
-    .formnote { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-block-start: 16px; }
-    .formnote a { font-weight: 700; font-size: 15px; padding-block: 10px; display: inline-block; }
+    .regcta .arw { transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+    .regcard:hover .regcta .arw { transform: translateX(-7px); }
+
+    /* touch: the whole card presses in */
+    .regcard:active { transform: rotate(0deg) translateY(-3px) scale(.993); }
 
     /* ---- ribbon swaps to a portrait curve rather than being squashed ---- */
     .ribbon-d path { --len: 3200; stroke-dasharray: 3200; stroke-dashoffset: 0; }
@@ -90,7 +132,6 @@
       .foot3 { grid-template-columns: 1fr 1fr !important; }
       .foot3 a { display: inline-block; padding-block: 9px !important; }
       .blink { display: inline-block; padding-block: 8px !important; }
-      .gform { --form-h: 1320px; }
     }
     @media (max-width: 560px) {
       .hero h1 { font-size: clamp(56px, 18vw, 132px) !important; }
@@ -101,8 +142,15 @@
       .brow { flex-wrap: wrap !important; gap: 10px !important; }
       .blink { margin-inline-start: 0 !important; }
       .sec { padding-block: 54px !important; }
-      .gform { --form-h: 1480px; }
-      .formpanel { border-radius: 14px; }
+      /* one column, and the rows get BIGGER, not smaller — a shrunken desktop
+         form is exactly what this must not look like */
+      .regfields { grid-template-columns: 1fr; gap: 14px; }
+      /* a near-full-width card needs a gentler tilt: the rotation grows the
+         box sideways, and at 320px there is no room left to grow into */
+      .regcard { padding: 26px 20px 24px; --tilt: -0.70deg; }
+      .regfield .lbl { font-size: 15px; }
+      .regfield .bar { height: 54px; }
+      .regcta { width: 100%; margin-block-start: 24px; padding-inline: 24px; }
     }
 
     /* ---- touch: nothing hidden behind hover; taps still get feedback ---- */
@@ -110,6 +158,9 @@
       .card:active { transform: translateY(-6px) !important; }
       .branch:active { background: #12081E; }
       a:active { opacity: .86; }
+      /* the card handles its own press state; the blanket fade would double up */
+      .regcard:active { opacity: 1; }
+      .regcard:active .regfield .bar { background: rgba(255,255,255,.085); border-color: rgba(255,255,255,.26); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -117,6 +168,13 @@
       .fly, .slide, .grow, .tumbler, .ribbon path, .lamp { animation: none !important; }
       .ribbon path { stroke-dashoffset: 0 !important; }
       .card { transition: none; }
+      /* no staggered deal-in, and no travel on hover or press — the colour and
+         shadow shifts carry the feedback instead */
+      .regwrap, .regfield { animation: none !important; }
+      .regcard, .regcta .arw, .regfield .bar { transition: none; }
+      .regcard:hover, .regcard:active { transform: rotate(var(--tilt)); }
+      .regcard:hover .regcta { background: #FFFFFF; }
+      .regcard:hover .regcta .arw { transform: none; }
     }
   </style>
 </head><body>
@@ -289,23 +347,29 @@
           </div>
         </div>
       </div>
-      <div class="fly" style="background: #070310; color: #FFFFFF; border-radius: 26px; padding: 30px 26px 30px;">
-        <span style="display: block; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #EEE333;">הרשמה</span>
-        <p style="margin: 10px 0 0; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: 26px; line-height: 1.1;">טופס ההרשמה</p>
-        <p style="margin: 6px 0 0; font-size: 15px; color: rgba(255,255,255,.55);">מילוי הטופס לוקח דקה. נחזור אליך בהקדם.</p>
+      <div class="regwrap">
+        <a class="regcard"
+           href="https://docs.google.com/forms/d/e/1FAIpQLSfUhZ6dJJiga10P5HWdfBRS15S-4fZB_lGqueN9YxfzrFt7uA/viewform?usp=dialog"
+           target="_blank" rel="noopener noreferrer"
+           aria-label="הרשמה לחוגים — פתיחת טופס ההרשמה בחלון חדש">
+          <span class="regbar" aria-hidden="true">
+            <span style="background: #EC008C;"></span><span style="background: #EEE333;"></span><span style="background: #00ACC5;"></span>
+          </span>
 
-        <div class="formpanel">
-          <iframe class="gform"
-                  src="https://docs.google.com/forms/d/e/1FAIpQLSfUhZ6dJJiga10P5HWdfBRS15S-4fZB_lGqueN9YxfzrFt7uA/viewform?embedded=true"
-                  title="טופס הרשמה — מחוללות"
-                  loading="lazy">טוען את הטופס…</iframe>
-        </div>
+          <span style="display: block; margin-block-start: 22px; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(29px, 3.3vw, 42px); line-height: 1.02;">הרשמה לחוגים</span>
+          <span style="display: block; margin-block-start: 8px; font-size: 16px; color: rgba(255,255,255,.55);">טופס קצר. נחזור אליך בהקדם.</span>
 
-        <p class="formnote" style="margin: 16px 0 0; font-size: 15px; color: rgba(255,255,255,.55);">
-          <span>הטופס לא נטען?</span>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSfUhZ6dJJiga10P5HWdfBRS15S-4fZB_lGqueN9YxfzrFt7uA/viewform"
-             target="_blank" rel="noopener" style="color: #EEE333;">פתיחה בחלון חדש ↗</a>
-        </p>
+          <span class="regfields" aria-hidden="true">
+            <span class="regfield"><span class="lbl">שם משפחה</span><span class="bar"></span></span>
+            <span class="regfield"><span class="lbl">שם פרטי</span><span class="bar"></span></span>
+            <span class="regfield wide"><span class="lbl">טלפון</span><span class="bar"></span></span>
+            <span class="regfield"><span class="lbl">סניף</span><span class="bar"></span></span>
+            <span class="regfield"><span class="lbl">גיל / כיתה</span><span class="bar"></span></span>
+          </span>
+
+          <span class="regcta"><span>להרשמה</span><span class="arw" aria-hidden="true">→</span></span>
+          <span style="display: block; margin-block-start: 12px; font-size: 14px; color: rgba(255,255,255,.42);">הטופס נפתח בחלון חדש</span>
+        </a>
       </div>
     </div>
   </div>
