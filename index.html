@@ -185,11 +185,12 @@
       .regcta { width: 100%; box-sizing: border-box; margin-block-start: 24px; padding-inline: 24px; }
     }
 
-    /* the school line wants two balanced lines. Below 360px the 24px minimum
-       cannot fit in two, so it drops just enough to stop a third line. */
-    @media (max-width: 359px) {
-      .schoolline { font-size: 21px !important; }
-    }
+    /* The school line breaks only between its three phrases, never inside one:
+       "והתעמלות קרקע" splitting across lines was the thing that looked wrong.
+       Balancing line lengths cannot achieve that — it evens the lengths and
+       still breaks mid-phrase — so each phrase is its own unbreakable unit and
+       the browser simply fits as many per line as the width allows. */
+    .schoolline > span { white-space: nowrap; }
 
     /* ---- touch: nothing hidden behind hover; taps still get feedback ---- */
     @media (hover: none) {
@@ -227,7 +228,7 @@
       <a href="#" style="color: rgba(255,255,255,.66); font-weight: 700; font-size: 15px;">תחומים</a>
       <a href="#" style="color: rgba(255,255,255,.66); font-weight: 700; font-size: 15px;">סניפים</a>
     </div>
-    <a href="tel:0548425090" dir="ltr" style="padding: 11px 24px; background: #EEE333; color: #070310; font-weight: 700; font-size: 15px; border-radius: 999px; unicode-bidi: isolate; white-space: nowrap;">054-8425090</a>
+    <a href="#registration" style="padding: 11px 24px; background: #EEE333; color: #070310; font-weight: 700; font-size: 15px; border-radius: 999px; white-space: nowrap;">חודש ניסיון</a>
   </div>
 
   <!-- ================= hero — type breaks the edge, then tumbles ================= -->
@@ -252,7 +253,7 @@
         <h1 style="margin: 0; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(72px, 17.5vw, 252px); line-height: .84; color: #FFFFFF;">מחוללות</h1>
       </div>
 
-      <p class="schoolline" style="margin: 14px 0 0; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(24px, 3.6vw, 44px); line-height: 1.08; color: #EEE333; text-wrap: balance;">בית הספר למחול והתעמלות קרקע בהנהלת <span style="white-space: nowrap;">שבי הולצברג</span></p>
+      <p class="schoolline" style="margin: 14px 0 0; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(24px, 3.6vw, 44px); line-height: 1.08; color: #EEE333;"><span>בית הספר למחול</span> <span>והתעמלות קרקע</span> <span>בהנהלת שבי הולצברג</span></p>
 
       <a href="tel:0548425090" style="display: inline-block; margin-top: 18px; padding: 12px 22px; border: 2px solid #EEE333; border-radius: 14px; color: #EEE333; font-family: 'IBM Plex Mono', monospace; font-size: clamp(22px, 3vw, 30px); font-weight: 500;" dir="ltr">054-8425090</a>
 
@@ -377,7 +378,7 @@
   </div>
 
   <!-- ================= registration — the loudest block ================= -->
-  <div class="sec" style="background: #8786FB; color: #070310; padding: 80px 56px 88px;">
+  <div class="sec" id="registration" style="background: #8786FB; color: #070310; padding: 80px 56px 88px;">
     <div class="stack2" style="display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: start;">
       <div>
         <h2 class="slide" style="margin: 0; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(40px, 7.6vw, 112px); line-height: .9; margin-inline-start: -2%;">חודש ניסיון</h2>
