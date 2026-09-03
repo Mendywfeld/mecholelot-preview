@@ -149,10 +149,7 @@
     @media (max-width: 860px) {
       .ribbon-d { display: none; }
       .ribbon-m { display: block; }
-      .navbar { padding: 16px 20px !important; gap: 12px !important; }
-      .navbar a { padding-block: 13px !important; }
-      .navlinks { display: none !important; }
-      .hero { padding: 18px 20px 56px !important; }
+      .hero { padding: 40px 20px 56px !important; }
       .sec { padding-inline: 20px !important; }
       .stack2 { grid-template-columns: 1fr !important; gap: 26px !important; }
       .sticky25 { position: static !important; }
@@ -220,19 +217,14 @@
 
 <div dir="rtl" style="width: 100%; max-width: 1440px; margin-inline: auto; background: #070310; color: #FFFFFF; font-family: Assistant, system-ui, sans-serif; font-size: 18px; line-height: 1.7; overflow: hidden;">
 
-  <!-- ================= nav ================= -->
-  <div class="navbar" style="display: flex; align-items: center; gap: 28px; padding: 22px 56px; position: relative; z-index: 30;">
-    <span style="font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: 26px; line-height: 1;">מחוללות</span>
-    <div class="navlinks" style="display: flex; gap: 26px; margin-inline-start: auto;">
-      <a href="#" style="color: rgba(255,255,255,.66); font-weight: 700; font-size: 15px;">אודות</a>
-      <a href="#" style="color: rgba(255,255,255,.66); font-weight: 700; font-size: 15px;">תחומים</a>
-      <a href="#" style="color: rgba(255,255,255,.66); font-weight: 700; font-size: 15px;">סניפים</a>
-    </div>
-    <a href="#registration" style="padding: 11px 24px; background: #EEE333; color: #070310; font-weight: 700; font-size: 15px; border-radius: 999px; white-space: nowrap;">חודש ניסיון</a>
-  </div>
+  <!-- The nav bar is gone on purpose: it carried the brand name and the phone,
+       both of which appear again in the hero immediately below. The hero's own
+       buttons now carry the two links the nav used to hold. Its top padding
+       absorbs the space the bar occupied so the page still opens with air
+       above the badge rather than against the browser chrome. -->
 
   <!-- ================= hero — type breaks the edge, then tumbles ================= -->
-  <div class="hero" style="position: relative; padding: 40px 56px 96px;">
+  <div class="hero" style="position: relative; padding: 64px 56px 96px;">
     <div class="lamp" style="position: absolute; inset: -10% -10% 20%; pointer-events: none; background: radial-gradient(38% 54% at 78% 0%, rgba(236,0,140,.55), transparent 64%), radial-gradient(34% 48% at 22% 6%, rgba(135,134,251,.42), transparent 62%), radial-gradient(30% 40% at 50% 30%, rgba(238,227,51,.20), transparent 66%);"></div>
 
     <svg class="ribbon ribbon-d" viewBox="0 0 1440 620" preserveAspectRatio="none" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;">
@@ -260,8 +252,8 @@
       <p style="margin: 26px 0 0; max-width: 46ch; font-size: 19px; color: rgba(255,255,255,.72);">שבי הולצברג — מפיקה, כוריאוגרפית, רקדנית, מנהלת להקת מחול מקצועית ומנהלת בית ספר למחול בסגנונות שונים והתעמלות קרקע ברחבי הארץ.</p>
 
       <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px;">
-        <a href="#" style="padding: 17px 38px; background: #EC008C; color: #070310; font-weight: 700; font-size: 18px; border-radius: 999px;">חודש ניסיון ללא התחייבות</a>
-        <a href="#" style="padding: 16px 30px; border: 1.5px solid rgba(255,255,255,.28); color: #FFFFFF; font-weight: 700; font-size: 17px; border-radius: 999px;">התחומים שלנו</a>
+        <a href="#registration" style="padding: 17px 38px; background: #EC008C; color: #070310; font-weight: 700; font-size: 18px; border-radius: 999px;">חודש ניסיון ללא התחייבות</a>
+        <a href="#disciplines" style="padding: 16px 30px; border: 1.5px solid rgba(255,255,255,.28); color: #FFFFFF; font-weight: 700; font-size: 17px; border-radius: 999px;">התחומים שלנו</a>
       </div>
     </div>
   </div>
@@ -298,7 +290,7 @@
   </div>
 
   <!-- ================= disciplines — asymmetric, each its own colour ================= -->
-  <div class="sec" style="padding: 30px 56px 90px;">
+  <div class="sec" id="disciplines" style="padding: 30px 56px 90px;">
     <h2 class="slide" style="margin: 0 0 34px; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(40px, 7.5vw, 108px); line-height: .92; margin-inline-start: -2%;">מה לומדים אצלנו?</h2>
     <div class="grid12" style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 18px;">
       <!-- every discipline now sits in its own colour block. Text is solid ink,
