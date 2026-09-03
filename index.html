@@ -249,7 +249,7 @@
 
       <a href="tel:0548425090" style="display: inline-block; margin-top: 18px; padding: 12px 22px; border: 2px solid #EEE333; border-radius: 14px; color: #EEE333; font-family: 'IBM Plex Mono', monospace; font-size: clamp(22px, 3vw, 30px); font-weight: 500;" dir="ltr">054-8425090</a>
 
-      <p style="margin: 26px 0 0; max-width: 46ch; font-size: 19px; color: rgba(255,255,255,.72);">שבי הולצברג — מפיקה, כוריאוגרפית, רקדנית, מנהלת להקת מחול מקצועית ומנהלת בית ספר למחול בסגנונות שונים והתעמלות קרקע ברחבי הארץ.</p>
+      <p style="margin: 26px 0 0; max-width: 46ch; font-size: 19px; color: rgba(255,255,255,.72);"><span style="white-space: nowrap;">שבי הולצברג</span> — מפיקה, כוריאוגרפית, רקדנית, מנהלת להקת מחול מקצועית ומנהלת בית ספר למחול בסגנונות שונים והתעמלות קרקע ברחבי הארץ.</p>
 
       <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px;">
         <a href="#registration" style="padding: 17px 38px; background: #EC008C; color: #070310; font-weight: 700; font-size: 18px; border-radius: 999px;">חודש ניסיון ללא התחייבות</a>
@@ -423,7 +423,9 @@
     <p style="margin: 0 0 34px; font-family: Heebo, system-ui, sans-serif; font-weight: 900; font-size: clamp(54px, 13vw, 190px); line-height: .82; color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,.22); margin-inline-start: -3%;">מחוללות</p>
     <div class="foot3" style="display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 30px; border-top: 1px solid rgba(255,255,255,.14); padding-top: 28px;">
       <div>
-        <p style="margin: 0; max-width: 30ch; color: rgba(255,255,255,.6); font-size: 16px;">בית הספר למחול ואקרובטיקה של שבי הולצברג</p>
+        <!-- 30ch was one character too narrow and forced a wrap that stranded
+             "הולצברג" alone; 34ch fits the sentence on one line from 375px up -->
+        <p class="schoolline" style="margin: 0; max-width: 34ch; color: rgba(255,255,255,.6); font-size: 16px;"><span>בית הספר למחול ואקרובטיקה</span> <span>של שבי הולצברג</span></p>
       </div>
       <div>
         <span style="display: block; font-weight: 700; font-size: 14px; color: rgba(255,255,255,.5);">סניפים</span>
